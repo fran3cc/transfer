@@ -3,15 +3,15 @@
 import torch
 import torch.optim as optim
 import torch.nn as nn
-from .model import LeNet
+from .model import NiN  # Importing the NiN model
 from .utils import load_data
 
-def train_model(data_path, epochs=10, batch_size=32, lr=0.001):
+def train_model(data_path, num_classes, epochs=10, batch_size=32, lr=0.001):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     train_loader, val_loader, _ = load_data(data_path, batch_size)
 
-    model = LeNet().to(device)
+    model = NiN(num_classes).to(device)  # Creating an instance of NiN
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
 

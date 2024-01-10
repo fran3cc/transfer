@@ -2,18 +2,23 @@
 
 import torch
 import torch.optim as optim
+from torch.optim.lr_scheduler import StepLR
 import torch.nn as nn
-from .model import NiN  # Importing the NiN model
+from .model import NiN  # Ensure this is importing the NiN model
 from .utils import load_data
 
-def train_model(data_path, num_classes, epochs=10, batch_size=32, lr=0.001):
+def train_model(data_path, num_classes, epochs=30, batch_size=32, lr=0.001, patience=5):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     train_loader, val_loader, _ = load_data(data_path, batch_size)
 
-    model = NiN(num_classes).to(device)  # Creating an instance of NiN
+    model = NiN(num_classes).to(device)  # Create an instance of NiN
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
+    scheduler = StepLR(optimizer, step_size=7, gamma=0.1)  # Learning rate scheduler
+
+    best_val_loss = float('inf')
+    no_improvement = 0
 
     for epoch in range(epochs):
         model.train()
@@ -41,6 +46,21 @@ def train_model(data_path, num_classes, epochs=10, batch_size=32, lr=0.001):
                 outputs = model(images)
                 loss = criterion(outputs, labels.squeeze().long())
                 val_loss += loss.item()
-        print(f'Validation Loss after Epoch {epoch+1}: {val_loss / len(val_loader)}')
+
+        avg_val_loss = val_loss / len(val_loader)
+        print(f'Validation Loss after Epoch {epoch+1}: {avg_val_loss}')
+
+        # Learning rate scheduler step
+        scheduler.step()
+
+        # Early Stopping
+        if avg_val_loss < best_val_loss:
+            best_val_loss = avg_val_loss
+            no_improvement = 0
+        else:
+            no_improvement += 1
+            if no_improvement >= patience:
+                print("Early stopping triggered")
+                break
 
     return model

@@ -7,13 +7,13 @@
 
 # main.py
 
+import torch  # Import torch here
 from B.train import train_model
 from B.evaluate import evaluate_model
-import torch
 
 if __name__ == "__main__":
     data_path = "./Datasets/pathmnist.npz"
-    num_classes = 9  # Set this to the number of classes in your dataset
+    num_classes = 9  # Adjust this to the number of your dataset classes
     epochs = 30
     batch_size = 32
     learning_rate = 0.001

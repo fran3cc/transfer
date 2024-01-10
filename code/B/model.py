@@ -3,13 +3,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class NiNBlock(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size, stride, padding, dropout=0.0):
+    def __init__(self, in_channels, out_channels, kernel_size, stride, padding):
         super(NiNBlock, self).__init__()
         self.block = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
-            nn.Dropout(dropout),
             nn.Conv2d(out_channels, out_channels, kernel_size=1),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
@@ -24,14 +23,12 @@ class NiNBlock(nn.Module):
 class NiN(nn.Module):
     def __init__(self, num_classes=9):
         super(NiN, self).__init__()
-        self.nin_block1 = NiNBlock(3, 48, kernel_size=5, stride=1, padding=2, dropout=0.2)
+        self.nin_block1 = NiNBlock(3, 48, kernel_size=5, stride=1, padding=2)
         self.nin_block2 = NiNBlock(48, 96, kernel_size=5, stride=1, padding=2)
         self.nin_block3 = NiNBlock(96, 192, kernel_size=3, stride=1, padding=1)
         self.nin_block4 = NiNBlock(192, 192, kernel_size=3, stride=1, padding=1)  # New block
-
-        # 其他层保持不变
         self.dropout = nn.Dropout(0.5)
-        self.final_block = NiNBlock(192, num_classes, kernel_size=3, stride=1, padding=1)  # 注意调整输入通道数
+        self.final_block = NiNBlock(192, num_classes, kernel_size=3, stride=1, padding=1)
         self.global_avg_pool = nn.AdaptiveAvgPool2d((1, 1))
 
         # Residual connections

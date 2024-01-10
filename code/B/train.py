@@ -8,14 +8,14 @@ import torch.nn as nn
 from .model import NiN  # Ensure this is importing the NiN model
 from .utils import load_data
 
-def train_model(data_path, num_classes, epochs=100, batch_size=128, lr=0.001, patience=5):
+def train_model(data_path, num_classes, epochs=100, batch_size=128, lr=0.001, patience=5, weight_decay=0.01):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     train_loader, val_loader, _ = load_data(data_path, batch_size)
 
     model = NiN(num_classes).to(device)  # 创建模型实例
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=lr)
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=patience, factor=0.1, verbose=True)
 
     best_val_loss = float('inf')

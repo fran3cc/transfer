@@ -28,11 +28,12 @@ def load_data(data_path, batch_size=32):
     test_images, test_labels = data['test_images'], data['test_labels']
 
     transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-        transforms.RandomHorizontalFlip(),
-        # Add any other transformations here
-    ])
+            transforms.RandomHorizontalFlip(),  # 水平翻转
+            transforms.RandomRotation(10),  # 随机旋转 ±10 度
+            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),  # 颜色抖动
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+        ])
 
     train_dataset = PathMNISTDataset(train_images, train_labels, transform)
     val_dataset = PathMNISTDataset(val_images, val_labels, transform)

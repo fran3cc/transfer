@@ -9,6 +9,7 @@ class NiNBlock(nn.Module):
             nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
             nn.Conv2d(out_channels, out_channels, kernel_size=1),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
@@ -23,7 +24,7 @@ class NiNBlock(nn.Module):
 class NiN(nn.Module):
     def __init__(self, num_classes=9):
         super(NiN, self).__init__()
-        self.nin_block1 = NiNBlock(3, 48, kernel_size=5, stride=1, padding=2)
+        self.nin_block1 = NiNBlock(3, 48, kernel_size=5, stride=1, padding=2, dropout=0.2)
         self.nin_block2 = NiNBlock(48, 96, kernel_size=5, stride=1, padding=2)
         self.nin_block3 = NiNBlock(96, 192, kernel_size=3, stride=1, padding=1)
         self.nin_block4 = NiNBlock(192, 192, kernel_size=3, stride=1, padding=1)  # New block

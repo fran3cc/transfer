@@ -9,6 +9,7 @@
 
 from B.train import train_model
 from B.evaluate import evaluate_model
+import torch
 
 if __name__ == "__main__":
     data_path = "./Datasets/pathmnist.npz"

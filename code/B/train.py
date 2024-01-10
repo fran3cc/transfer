@@ -7,7 +7,7 @@ import torch.nn as nn
 from .model import NiN  # Ensure this is importing the NiN model
 from .utils import load_data
 
-def train_model(data_path, num_classes, epochs=100, batch_size=64, lr=0.001, patience=5):
+def train_model(data_path, num_classes, epochs=30, batch_size=64, lr=0.001, patience=3):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     train_loader, val_loader, _ = load_data(data_path, batch_size)

@@ -13,7 +13,7 @@ import torch
 
 if __name__ == "__main__":
     data_path = "./Datasets/pathmnist.npz"
-    model = train_model(data_path, epochs=10, batch_size=32, lr=0.001)
+    model = train_model(data_path, epochs=30, batch_size=32, lr=0.001)
 
     # Saving the model
     torch.save(model.state_dict(), './B/pathmnist_model.pth')

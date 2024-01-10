@@ -53,9 +53,6 @@ def train_model(data_path, num_classes, epochs=100, batch_size=128, lr=0.001, pa
         scheduler.step(avg_val_loss)
         print(f'Validation Loss after Epoch {epoch+1}: {avg_val_loss}')
 
-        # Learning rate scheduler step
-        scheduler.step()
-
         # Early Stopping
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
